@@ -7,10 +7,10 @@
           </div>
           <nav>
             <button class="btnblack" @click="gotoHome">主页</button>
-              <button class="btnwhite" @click="gotoMap">地图</button>
+            <button class="btnwhite" @click="gotoMap">地图</button>
           </nav>
         </div>
-  
+
         <div class="box" style="margin-right: 60px;">
           <nav>
             <el-dropdown v-if="isLoggedIn" @command="handleCommand">
@@ -24,122 +24,100 @@
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <div v-else>
-
-            </div>
+            <div v-else></div>
           </nav>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import { onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { ElDropdown, ElButton, ElDropdownMenu, ElDropdownItem } from 'element-plus';
-  
-  export default {
-    name: "Head",
-    components: {
-      ElDropdown,
-      ElButton,
-      ElDropdownMenu,
-      ElDropdownItem,
-    },
-    setup() {
-      const router = useRouter();
-      const userAvatarUrl = 'path/to/default/avatar.png'; // 默认头像路径
-  
-      const gotoHome = () => {
-        router.push({ name: 'Home' });
-      };
-  
-      const gotoMap = () => {
-        router.push({ name: 'Map' });
-      };
-  
-      const handleCommand = (command) => {
-        if (command === 'profile') {
-          router.push({ name: 'UserProfile' });
-        } else if (command === 'logout') {
-          // 处理登出逻辑
-          console.log("用户已登出");
-          gotoHome();
-        }
-      };
-  
-      onMounted(() => {
-        // 任何额外的设置
-      });
-  
-      return {
-        gotoHome,
-        gotoMap,
-        handleCommand,
-        userAvatarUrl
-      };
-    }
-  };
-  </script>
-  
+</template>
+
+<script>
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { ElDropdown, ElButton, ElDropdownMenu, ElDropdownItem } from 'element-plus';
+
+export default {
+  name: "Head",
+  components: {
+    ElDropdown,
+    ElButton,
+    ElDropdownMenu,
+    ElDropdownItem,
+  },
+  setup() {
+    const router = useRouter();
+    const userAvatarUrl = 'path/to/default/avatar.png'; // 默认头像路径
+
+    const gotoHome = () => {
+      router.push({ name: 'Home' });
+    };
+
+    const gotoMap = () => {
+      router.push({ name: 'Map' });
+    };
+
+    onMounted(() => {
+      // 任何额外的设置
+    });
+
+    return {
+      gotoHome,
+      gotoMap,
+    };
+  }
+};
+</script>
+
 <style scoped>
 @import url(../assets/css/buttonblack.css);
 @import url(../assets/css/buttonwhite.css);
+
 .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 100px;
-      background: linear-gradient(to right, #00ffb3, #00b7ff); /* 渐变色 */
-      color: #000000; /* 文字颜色为黑色 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100px;
+  background: linear-gradient(270deg, #00ffb3, #00b7ff, #00ffb3);
+  background-size: 400% 400%;
+  animation: gradient 5s ease infinite;
+  color: #ffffff;
+  border-radius: 20px;
+  margin: 0; /* 确保没有外边距 */
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
   }
-  
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .box {
-    display: flex;
-    align-items: center;
-}
-
-img {
-    height: 150px;
-    width: 200px;
-    object-fit: cover; /* 确保图片保持比例填充 */
-}
-
-nav a {
-    padding: 0 15px;
-    text-decoration: none;
-    color: #000000;
-    font-size: 16px;
-    font-weight: normal;
-    opacity: 0.9;
-    transition: opacity 0.3s ease-in-out; /* 添加过渡效果 */
-}
-
-nav a:hover {
-    opacity: 1;
-}
-
-.textOne {
-    font-size: 20px;
+  display: flex;
+  align-items: center;
 }
 
 .user-avatar-button {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .user-avatar {
-    border-radius: 50%; /* 圆形头像 */
-    object-fit: cover; /* 确保头像保持比例填充 */
-    margin-right: 10px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
 }
 
 .el-dropdown-menu {
-    width: 150px; /* 调整菜单宽度 */
+  width: 150px;
 }
 
 .el-dropdown-item {
-    font-size: 16px; /* 调整字体大小 */
+  font-size: 16px;
 }
 </style>
-  

@@ -30,26 +30,69 @@ export default {
         console.log("地图未找到");
         return;
       }
-      map.value = L.map('map').setView([32.0, 117.0], 13);
 
-      // 使用 Axios 获取瓦片信息
-      try {
-        const response = await axios.get('/mapabc/roadmap/8/209/102.png');
-        console.log(response.data);
-      } catch (error) {
-        console.error('请求瓦片失败:', error.response ? error.response.data : error.message);
-      }
+      const mapOptions = {
+        center: [32.0, 117.0],
+        zoom: 13,
+        minZoom: 8,
+        maxZoom: 18,
+        zoomControl: true,
+        dragging: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        keyboard: true,
+        attributionControl: false,
+        zoomAnimation: true,
+        fadeAnimation: true,
+      };
+
+      map.value = L.map('map', mapOptions);
 
       // 添加离线瓦片图层
-      L.tileLayer('/mapabc/roadmap/{z}/{x}/{y}.png', {
+      const tileLayerOptions = {
         minZoom: 8,
         maxZoom: 15,
+        tileSize: 256,
+        zoomOffset: 0,
+        subdomains: ['a', 'b', 'c'],
+        errorTileUrl: '/path/to/error/tile.png',
         attribution: '© Your Attribution Here',
-      }).addTo(map.value);
+      };
 
-      // 添加标记示例
+      L.tileLayer('/mapabc/roadmap/{z}/{x}/{y}.png', tileLayerOptions).addTo(map.value);
+
+      // 定义多个标记地点，添加时间信息
+      const locations = [
+        { coords: [32.0, 117.0], name: '地点 1', time: '2024-10-01 10:00' },
+        { coords: [32.1, 117.1], name: '地点 2', time: '2024-10-02 11:00' },
+        { coords: [32.2, 117.2], name: '地点 3', time: '2024-10-03 12:00' },
+      ];
+
+      // 创建一个数组来保存标记
+      const markers = locations.map(location => {
+        const popupContent = `
+          <strong>${location.name}</strong><br />
+          经纬度: ${location.coords[0]}, ${location.coords[1]}<br />
+          时间: ${location.time}
+        `;
+
+        const marker = L.marker(location.coords);
+          marker.bindPopup(popupContent); // 绑定弹出内容
+          return marker; // 返回标记
+        });
+
+        // 将所有标记添加到地图上
+        markers.forEach(
+          
+        marker => {
+          console.log("marker",marker)
+          marker.addTo(map.value)
+        });
+
+      // 示例标记
       L.marker([32.0, 117.0]).addTo(map.value)
-        .bindPopup('我标记了一处地点')
+        .bindPopup('我叫王载风，现在是时间：2024年10月7日，我标记了一处地点')
         .openPopup();
     });
 
@@ -58,7 +101,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .map {
   height: 100vh; /* 设置地图高度 */
   width: 100%;
