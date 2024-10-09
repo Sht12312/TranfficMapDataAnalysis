@@ -25,7 +25,7 @@ export default {
       };
 
       // 初始化地图
-      map.value = L.map('map', { attributionControl: false }).setView([32.0, 117.0], 13);
+      map.value = L.map('map', { attributionControl: false }).setView([31.911, 118.911], 13);
       L.tileLayer('/mapabc/roadmap/{z}/{x}/{y}.png', {
         minZoom: 8,
         maxZoom: 15,
@@ -104,10 +104,7 @@ export default {
         }
       });
 
-      // 默认标记示例
-      L.marker([32.0, 117.0], { icon: icon }).addTo(map.value)
-        .bindPopup('我叫王载风，现在是时间：2024年10月7日，我标记了一处地点')
-        .openPopup();
+
     });
 
     defineExpose({
