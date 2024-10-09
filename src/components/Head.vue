@@ -6,9 +6,11 @@
             <img src="@/assets/img/pni.png" @click="gotoHome" style="transform: scale(0.5);">
           </div>
           <nav>
+
             <button class="btnblack" @click="gotoHome">主页</button>
             <button class="btnwhite" @click="gotoMap">地图</button>
-            <button class="btngreen" @click="gotoScreen">数据大屏</button>
+            <button class="btnblack" @click="gotoScreen">数据大屏</button>
+          
           </nav>
         </div>
 

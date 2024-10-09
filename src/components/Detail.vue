@@ -1,7 +1,10 @@
 <template>
     <div class="detail">
-      <p>经度: <span>{{ longitude }}</span></p>
-      <p>纬度: <span>{{ latitude }}</span></p>
+      <div class="direction2" style="font">点击地图显示坐标</div>
+      <div class="coordinates">
+      <div class="direction">经度: <span>{{ longitude.toFixed(3) }}</span></div>
+      <div class="direction">纬度: <span>{{ latitude.toFixed(3) }}</span></div>
+    </div>
     </div>
   </template>
   
@@ -19,22 +22,22 @@
       }
     },
     setup(props) {
-      // 可以在这里添加其他逻辑
     }
   };
   </script>
 
 <style>
 .detail {
-    border-width: 10px; /* 设置边框宽度 */
-    border-style: solid; /* 设置边框样式 */
-    border-image: linear-gradient(270deg, #00ffb3, #00b7ff, #00ffb3); /* 渐变边框 */
-    border-image-slice: 1; /* 切割边框 */
-    border-radius: 50px; /* 更大的圆角边框 */
-    padding: 20px; /* 内边距 */
-    margin: 10px; /* 外边距 */
-    animation: gradient-border 5s ease infinite; /* 添加动画 */
-    overflow: hidden; /* 确保内容不超出边框 */
+
+    border-width: 10px; 
+    border-style: solid;
+    border-image: linear-gradient(270deg, #00ffb3, #00b7ff, #00ffb3); 
+    border-image-slice: 1;
+    border-radius: 50px; 
+    padding: 20px; 
+    margin: 10px;
+    animation: gradient-border 5s ease infinite; 
+    overflow: hidden; 
 }
 
 @keyframes gradient-border {
@@ -48,4 +51,34 @@
         border-image-source: linear-gradient(270deg, #00ffb3, #00b7ff, #00ffb3);
     }
 }
+.coordinates {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.direction {
+  border-width: 10px;
+  border: 5px solid rgb(0, 247, 255);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 10px;
+  padding: 5px;
+  flex: 1; 
+}
+
+.direction2 {
+  height: 5%;
+  border: 5px solid rgb(0, 226, 125);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 10px;
+}
+
 </style>
