@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { getCurrentInstance } from 'vue';
 
 export default {
@@ -29,22 +28,6 @@ export default {
             let container = document.getElementById("loading");
             container.classList.add("loading_out");
         };
-
-        axios.defaults.timeout = 10000
-        axios.interceptors.response.use(
-            response => {
-                conout();
-                return response;
-            },
-            error => {
-                if(error.code == 'ECONNABORTED' || error.meggage.includes('timeout')){
-                    console.log("Request timeout keeping loading animation")
-                } else {
-                    conout();
-                }
-                return Promise.reject(error)
-            }
-        )
 
         return {
             conin,

@@ -1,17 +1,28 @@
 <template>
     <div class="detail">
-        Hello World
+      <p>经度: <span>{{ longitude }}</span></p>
+      <p>纬度: <span>{{ latitude }}</span></p>
     </div>
-</template>
-
-<script>
-export default {
+  </template>
+  
+  <script>
+  export default {
     name: 'Detail',
-    setup() {
-        // 可以在这里添加逻辑
+    props: {
+      latitude: {
+        type: Number,
+        default: null
+      },
+      longitude: {
+        type: Number,
+        default: null
+      }
+    },
+    setup(props) {
+      // 可以在这里添加其他逻辑
     }
-}
-</script>
+  };
+  </script>
 
 <style>
 .detail {

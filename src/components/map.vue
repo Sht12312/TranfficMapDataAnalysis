@@ -3,97 +3,115 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
-import axios from 'axios';
+import { onMounted, ref, defineExpose } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 export default {
   name: 'Map',
-  setup() {
+  setup(props, { emit }) {
+    let marker = null;
     const map = ref(null);
+    const markers = ref([]); // 存储所有 Shift 添加的标记
+    let isShiftPressed = false; // 检测 Shift 是否按下
 
-    onMounted(async () => {
-      // 修改 Leaflet 的 Popup 原型
+    onMounted(() => {
+      // 修改 Leaflet 的 Popup 原型动画
       L.Popup.prototype._animateZoom = function (e) {
-        if (!this._map) {
-          return;
-        }
+        if (!this._map) return;
         const pos = this._map._latLngToNewLayerPoint(this._latlng, e.zoom, e.center),
               anchor = this._getAnchor();
         L.DomUtil.setPosition(this._container, pos.add(anchor));
       };
 
-      // 创建地图实例
-      const mapElement = document.getElementById('map');
-      if (!mapElement) {
-        console.log("地图未找到");
-        return;
-      }
-
-      const mapOptions = {
-        center: [32.0, 117.0],
-        zoom: 13,
-        minZoom: 8,
-        maxZoom: 18,
-        zoomControl: true,
-        dragging: true,
-        scrollWheelZoom: true,
-        doubleClickZoom: true,
-        boxZoom: true,
-        keyboard: true,
-        attributionControl: false,
-        zoomAnimation: true,
-        fadeAnimation: true,
-      };
-
-      map.value = L.map('map', mapOptions);
-
-      // 添加离线瓦片图层
-      const tileLayerOptions = {
+      // 初始化地图
+      map.value = L.map('map', { attributionControl: false }).setView([32.0, 117.0], 13);
+      L.tileLayer('/mapabc/roadmap/{z}/{x}/{y}.png', {
         minZoom: 8,
         maxZoom: 15,
-        tileSize: 256,
-        zoomOffset: 0,
-        subdomains: ['a', 'b', 'c'],
-        errorTileUrl: '/path/to/error/tile.png',
         attribution: '© Your Attribution Here',
-      };
+      }).addTo(map.value);
 
-      L.tileLayer('/mapabc/roadmap/{z}/{x}/{y}.png', tileLayerOptions).addTo(map.value);
+      // 定义两个不同的图标
+      const icon = L.icon({
+        iconUrl: require('@/assets/img/marker-icon-2x.png'), 
+        iconSize: [32, 52], 
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32], 
+      });
 
-      // 定义多个标记地点，添加时间信息
-      const locations = [
-        { coords: [32.0, 117.0], name: '地点 1', time: '2024-10-01 10:00' },
-        { coords: [32.1, 117.1], name: '地点 2', time: '2024-10-02 11:00' },
-        { coords: [32.2, 117.2], name: '地点 3', time: '2024-10-03 12:00' },
-      ];
+      const icon2 = L.icon({
+        iconUrl : require('@/assets/img/marker02.png'),
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34], 
+        shadowSize: [41, 41]
+      });
 
-      // 创建一个数组来保存标记
-      const markers = locations.map(location => {
-        const popupContent = `
-          <strong>${location.name}</strong><br />
-          经纬度: ${location.coords[0]}, ${location.coords[1]}<br />
-          时间: ${location.time}
-        `;
+      // 地图点击事件
+      map.value.on('click', function(e) {
+        const latlng = e.latlng;
+        const zoom = map.value.getZoom();
 
-        const marker = L.marker(location.coords);
-          marker.bindPopup(popupContent); // 绑定弹出内容
-          return marker; // 返回标记
+        // 触发 Vue 事件，传递点击坐标
+        emit('map-click', {
+          longitude: latlng.lng,
+          latitude: latlng.lat,
+          zoom: zoom
         });
 
-        // 将所有标记添加到地图上
-        markers.forEach(
-          
-        marker => {
-          console.log("marker",marker)
-          marker.addTo(map.value)
-        });
+        // 如果 Shift 没有按下，添加或更新单个标记
+        if (!isShiftPressed) {
+          if (marker) {
+            marker.setLatLng(latlng).update();
+          } else {
+            marker = L.marker([latlng.lat, latlng.lng], { icon: icon }).addTo(map.value)
+              .bindPopup("经度: " + latlng.lng.toFixed(3) + "<br>纬度: " + latlng.lat.toFixed(3))
+              .openPopup();
+          }
+        }
+      });
 
-      // 示例标记
-      L.marker([32.0, 117.0]).addTo(map.value)
+      // 按住 Shift 时点击添加新标记
+      map.value.on('click', function(e) {
+        if (isShiftPressed) {
+          const latlng = e.latlng;
+          const newMarker = L.marker([latlng.lat, latlng.lng], { icon: icon2 }).addTo(map.value)
+            .bindPopup("经度: " + latlng.lng.toFixed(3) + "<br>纬度: " + latlng.lat.toFixed(3))
+            .openPopup();
+          markers.value.push(newMarker); // 将新标记存入数组
+        }
+      });
+
+      // Shift 键的按下和松开事件监听
+      document.addEventListener('keydown', function(e) {
+        if (e.key === "Shift") {
+          isShiftPressed = true;
+        }
+      });
+
+      document.addEventListener('keyup', function(e) {
+        if (e.key === "Shift") {
+          isShiftPressed = false;
+        }
+      });
+
+      // 右键单击删除最后一个标记
+      map.value.on('contextmenu', function() {
+        if (markers.value.length > 0) {
+          const lastMarker = markers.value.pop();
+          map.value.removeLayer(lastMarker);
+        }
+      });
+
+      // 默认标记示例
+      L.marker([32.0, 117.0], { icon: icon }).addTo(map.value)
         .bindPopup('我叫王载风，现在是时间：2024年10月7日，我标记了一处地点')
         .openPopup();
+    });
+
+    defineExpose({
+      mapInstance: map 
     });
 
     return { map };
@@ -103,7 +121,7 @@ export default {
 
 <style>
 .map {
-  height: 100vh; /* 设置地图高度 */
+  height: 100vh; 
   width: 100%;
 }
 </style>

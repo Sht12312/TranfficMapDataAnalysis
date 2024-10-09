@@ -12,6 +12,11 @@ const routes = [
         path : '/Map',
         name : 'Map',
         component: Trajectory
+    },
+    {
+        path : '/Screen',
+        name : 'Screen',
+        component: () => import('@/pages/Screen.vue')
     }
 ]
 

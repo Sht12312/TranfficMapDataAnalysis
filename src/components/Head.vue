@@ -8,6 +8,7 @@
           <nav>
             <button class="btnblack" @click="gotoHome">主页</button>
             <button class="btnwhite" @click="gotoMap">地图</button>
+            <button class="btngreen" @click="gotoScreen">数据大屏</button>
           </nav>
         </div>
 
@@ -56,6 +57,10 @@ export default {
       router.push({ name: 'Map' });
     };
 
+    const gotoScreen =() => {
+      router.push({ name : 'Screen'})
+    }
+
     onMounted(() => {
       // 任何额外的设置
     });
@@ -63,6 +68,7 @@ export default {
     return {
       gotoHome,
       gotoMap,
+      gotoScreen
     };
   }
 };
@@ -71,7 +77,7 @@ export default {
 <style scoped>
 @import url(../assets/css/buttonblack.css);
 @import url(../assets/css/buttonwhite.css);
-
+@import url(../assets/css/buttongreen.css);
 .header {
   display: flex;
   align-items: center;
