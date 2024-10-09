@@ -2,8 +2,8 @@
     <div class="detail">
       <div class="direction2" style="font">点击地图显示坐标</div>
       <div class="coordinates">
-      <div class="direction">经度: <span>{{ longitude.toFixed(3) }}</span></div>
-      <div class="direction">纬度: <span>{{ latitude.toFixed(3) }}</span></div>
+      <div class="direction">经度: <span>{{ longitude !== null ? longitude.toFixed(3) : '未知' }}</span></div>
+      <div class="direction">纬度: <span>{{ latitude !== null ? latitude.toFixed(3) : '未知' }}</span></div>
     </div>
     </div>
   </template>
